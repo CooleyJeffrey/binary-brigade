@@ -1,6 +1,6 @@
  // Fetch news data and update HTML elements(set html)
  function updateNews() {
-    const apiKey = '9a75b8ec02a84d67a432cd48764a03f5';
+    const apiKey = 'acbe75f58962484c92da30b065c322f8';
     const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
 
     fetch(apiUrl)
@@ -28,7 +28,7 @@
   updateNews();
 // Fetch weather data and update HTML elements (set html)
 function updateWeather() {
-    const apiKey = 'YOUR_WEATHER_API_KEY';
+    const apiKey = 'ba8466dd7c66421db6f25302243001';
     const city = 'New York'; // Example city
     const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
   
