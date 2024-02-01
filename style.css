@@ -1,0 +1,26 @@
+
+html,
+body,
+.wrapper {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: #f9fbfd;
+}
+.top-bar  {
+  background-color: rgb(39, 39, 82);
+  height: 4em;
+  width: 100em;
+
+}
+a:-webkit-any-link {
+  color:#d5d0d5
+
+}
+ .class ul {
+  color: #d5d0d5;
+ }
