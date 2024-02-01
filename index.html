@@ -374,6 +374,15 @@
     <script src="assets\script.js"></script>
     <script>
       $(document).foundation();
+      function searchWeather() {
+    const city = document.getElementById('weather-search-input').value;
+    updateWeather(city);
+  }
+
+  function searchNews() {
+    const query = document.getElementById('news-search-input').value;
+    updateNews(query);
+  }
     </script>
   </body>
 </html>

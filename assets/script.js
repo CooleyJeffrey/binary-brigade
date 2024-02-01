@@ -1,49 +1,55 @@
- // Fetch news data and update HTML elements(set html)
- function updateNews() {
-    const apiKey = 'acbe75f58962484c92da30b065c322f8';
-    const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
+// Fetch news data and update HTML elements(set html)
+const newsApiKey = '9a75b8ec02a84d67a432cd48764a03f5'; // News API key
 
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        const newsList = document.getElementById('news-list');
-        console.log("hi");
+const newsApiUrl = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${newsApiKey}`;
 
-        // Clear previous news items
-        newsList.innerHTML = '';
+async function updateNews(query = '') {
+  try {
+    const response = await fetch(query ? `${newsApiUrl}&q=${query}` : newsApiUrl);
+    const data = await response.json();
 
-        // Add news articles to the list
-        data.articles.forEach(article => {
-          const listItem = document.createElement('li');
-          listItem.innerHTML = `<a href="${article.url}" target="_blank">${article.title}</a>`;
-          newsList.appendChild(listItem);
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching news:', error);
-      });
+    const newsList = document.getElementById('news-list');
+    newsList.innerHTML = '';
+
+    data.articles.forEach(article => {
+      const listItem = document.createElement('li');
+      listItem.innerHTML = `<a href="${article.url}" target="_blank">${article.title}</a>`;
+      newsList.appendChild(listItem);
+    });
+  } catch (error) {
+    console.error('Error fetching news:', error);
   }
+}
 
-  // Call the updateNews function to fetch and update news information
-  updateNews();
 // Fetch weather data and update HTML elements (set html)
-function updateWeather() {
-    const apiKey = 'ba8466dd7c66421db6f25302243001';
-    const city = 'New York'; // Example city
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
-  
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        // Update HTML elements with weather information
-        document.getElementById('weather-description').textContent = data.weather[0].description;
-        document.getElementById('temperature').textContent = `Temperature: ${data.main.temp} °C`;
-        document.getElementById('location').textContent = `Location: ${data.name}, ${data.sys.country}`;
-      })
-      .catch(error => {
-        console.error('Error fetching weather:', error);
-      });
+const weatherApiKey = 'API_KEY'; // Replace 'API_KEY' with actual OpenWeatherMap API key
+
+async function updateWeather(city = 'New York') {
+  try {
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}`);
+    const data = await response.json();
+
+    // Update HTML elements with weather information
+    document.getElementById('weather-description').textContent = data.weather[0].description;
+    document.getElementById('temperature').textContent = `Temperature: ${data.main.temp} °C`;
+    document.getElementById('location').textContent = `Location: ${data.name}, ${data.sys.country}`;
+  } catch (error) {
+    console.error('Error fetching weather:', error);
   }
-  
-  // Call the updateWeather function to fetch and update weather information
-  updateWeather();
+}
+
+// Search function for news and weather
+function search() {
+  const weatherQuery = document.getElementById('weather-search-input').value;
+  updateWeather(weatherQuery);
+
+  const newsQuery = document.getElementById('news-search-input').value;
+  updateNews(newsQuery);
+}
+
+// Event listener for search button
+document.getElementById('search-button').addEventListener('click', search);
+
+// Initial data update
+updateNews();
+updateWeather();
