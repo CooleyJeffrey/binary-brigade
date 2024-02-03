@@ -1,55 +1,103 @@
-// Fetch news data and update HTML elements(set html)
-const newsApiKey = '9a75b8ec02a84d67a432cd48764a03f5'; // News API key
-
-const newsApiUrl = `https://newsapi.org/v2/top-headlines?country=us&category=technology&apiKey=9a75b8ec02a84d67a432cd48764a03f5`;
-
-async function updateNews(query = 'tech') {
-  try {
-    const response = await fetch(query ? `${newsApiUrl}&q=${query}` : newsApiUrl,{mode:'cors'});
-    const data = await response.json();
-
+document.addEventListener("DOMContentLoaded", function () {
+    const weatherElement = document.getElementById('weather-display');
     const newsList = document.getElementById('news-list');
-    newsList.innerHTML = '';
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const weatherSearchInput = document.getElementById('weather-search-input');
+    const weatherSearchButton = document.getElementById('weather-search-button');
 
-    data.articles.forEach(article => {
-      const listItem = document.createElement('li');
-      listItem.innerHTML = `<a href="${article.url}" target="_blank">${article.title}</a>`;
-      newsList.appendChild(listItem);
-    });
-  } catch (error) {
-    console.error('Error fetching news:', error);
-  }
-}
+    const weatherApiKey = '8b5197e33de4d2ab503208b076814a9e';
+    const newsApiKey = '92eAk2h5NotfAJuwLDQj83mQJ7bAcpCK';
 
-// Fetch weather data and update HTML elements (set html)
-const weatherApiKey = '8b5197e33de4d2ab503208b076814a9e';
+    // Function to fetch news articles
+    async function fetchNewsArticles(searchKeyword) {
+        const newsApiUrl = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${searchKeyword}&api-key=${newsApiKey}`;
+        try {
+            const response = await fetch(newsApiUrl);
+            const data = await response.json();
+            return data.response.docs; // assuming 'articles' is an array in 'response'
+        } catch (error) {
+            console.error('Error fetching news:', error);
+            newsList.innerHTML = '<p>Error fetching news</p>';
+            return [];
+        }
+    }
 
-async function updateWeather(city = 'New York') {
-  try {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}units=imperial`);
-    const data = await response.json();
+    // Function to render articles in the list
+    function renderArticles(articles) {
+        newsList.innerHTML = '';
+        articles.forEach((article) => {
+            const articleElement = document.createElement('div');
+            articleElement.classList.add('article');
 
-    // Update HTML elements with weather information
-    document.getElementById('weather-description').textContent = data.weather[0].description;
-    document.getElementById('temperature').textContent = `Temperature: ${data.main.temp} °F`;
-    document.getElementById('location').textContent = `Location: ${data.name}, ${data.sys.country}`;
-  } catch (error) {
-    console.error('Error fetching weather:', error);
-  }
-}
+            const titleElement = document.createElement('h2');
+            titleElement.textContent = article.headline.main;
 
-// Search function for news and weather
-function search() {
-  const weatherQuery = document.getElementById('weather-search-input').value;
-  updateWeather(weatherQuery);
+            const descriptionElement = document.createElement('p');
+            descriptionElement.textContent = article.abstract;
 
-  const newsQuery = document.getElementById('news-search-input').value;
-  updateNews(newsQuery);
-}
+            const sourceElement = document.createElement('p');
+            sourceElement.textContent = `Source: ${article.source}`;
 
-// Event listener for search button
-document.getElementById('search-button').addEventListener('click', search);
+            const linkElement = document.createElement('a');
+            linkElement.textContent = 'Read more';
+            linkElement.href = article.web_url;
+            linkElement.target = '_blank';
 
-// Initial data update
-updateNews();
-updateWeather();
+            articleElement.appendChild(titleElement);
+            articleElement.appendChild(descriptionElement);
+            articleElement.appendChild(sourceElement);
+            articleElement.appendChild(linkElement);
+
+            newsList.appendChild(articleElement);
+        });
+    }
+
+    // Function to handle search button click
+    async function handleSearchButtonClick() {
+        const searchKeyword = searchInput.value.trim();
+        if (searchKeyword !== '') {
+            const articles = await fetchNewsArticles(searchKeyword);
+            renderArticles(articles);
+        }
+    }
+
+    // Function to handle weather search button click
+    function handleWeatherSearchButtonClick() {
+        const weatherQuery = weatherSearchInput.value.trim();
+        if (weatherQuery !== '') {
+            updateWeather(weatherQuery);
+        } else {
+            // If the search input is empty, display an error message
+            weatherElement.innerHTML = '<p>Please enter a valid city name</p>';
+        }
+    }
+
+    // Function to update weather data
+    async function updateWeather(city) {
+        try {
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=metric`);
+            
+            if (!response.ok) {
+                throw new Error('Weather data not found');
+            }
+
+            const data = await response.json();
+
+            // Extract relevant weather information from the response
+            const weatherDescription = data.weather[0].description;
+            const temperatureCelsius = data.main.temp;
+            const temperatureFahrenheit = (temperatureCelsius * 9/5) + 32;
+
+            // Update the weather display on your page
+            weatherElement.innerHTML = `Weather: ${weatherDescription}, Temperature: ${temperatureCelsius}°C / ${temperatureFahrenheit}°F`;
+        } catch (error) {
+            console.error('Error fetching weather:', error);
+            weatherElement.innerHTML = '<p>Error fetching weather</p>';
+        }
+    }
+
+    // Event listeners
+    searchButton.addEventListener('click', handleSearchButtonClick);
+    weatherSearchButton.addEventListener('click', handleWeatherSearchButtonClick);
+});
