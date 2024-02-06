@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const weatherElement = document.getElementById('weather-display');
+    const weatherResults = document.getElementById('weatherResults');
     const newsList = document.getElementById('news-list');
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
-    const weatherSearchInput = document.getElementById('weather-search-input');
-    const weatherSearchButton = document.getElementById('weather-search-button');
+    const weatherSearchInput = document.getElementById('weatherSearchInput');
+    const weatherSearchButton = document.getElementById('weatherSearchButton');
 
     const weatherApiKey = '8b5197e33de4d2ab503208b076814a9e';
     const newsApiKey = '92eAk2h5NotfAJuwLDQj83mQJ7bAcpCK';
@@ -53,26 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Function to handle search button click
-    async function handleSearchButtonClick() {
-        const searchKeyword = searchInput.value.trim();
-        if (searchKeyword !== '') {
-            const articles = await fetchNewsArticles(searchKeyword);
-            renderArticles(articles);
-        }
-    }
-
-    // Function to handle weather search button click
-    function handleWeatherSearchButtonClick() {
-        const weatherQuery = weatherSearchInput.value.trim();
-        if (weatherQuery !== '') {
-            updateWeather(weatherQuery);
-        } else {
-            // If the search input is empty, display an error message
-            weatherElement.innerHTML = '<p>Please enter a valid city name</p>';
-        }
-    }
-
     // Function to update weather data
     async function updateWeather(city) {
         try {
@@ -90,14 +70,34 @@ document.addEventListener("DOMContentLoaded", function () {
             const temperatureFahrenheit = (temperatureCelsius * 9/5) + 32;
 
             // Update the weather display on your page
-            weatherElement.innerHTML = `Weather: ${weatherDescription}, Temperature: ${temperatureCelsius}°C / ${temperatureFahrenheit}°F`;
+            weatherResults.innerHTML = `Weather: ${weatherDescription}, Temperature: ${temperatureCelsius}°C / ${temperatureFahrenheit}°F`;
         } catch (error) {
             console.error('Error fetching weather:', error);
-            weatherElement.innerHTML = '<p>Error fetching weather</p>';
+            weatherResults.innerHTML = '<p>Error fetching weather</p>';
         }
     }
 
     // Event listeners
     searchButton.addEventListener('click', handleSearchButtonClick);
     weatherSearchButton.addEventListener('click', handleWeatherSearchButtonClick);
+
+    // Function to handle search button click
+    async function handleSearchButtonClick() {
+        const searchKeyword = searchInput.value.trim();
+        if (searchKeyword !== '') {
+            const articles = await fetchNewsArticles(searchKeyword);
+            renderArticles(articles);
+        }
+    }
+
+    // Function to handle weather search button click
+    function handleWeatherSearchButtonClick() {
+        const weatherQuery = weatherSearchInput.value.trim();
+        if (weatherQuery !== '') {
+            updateWeather(weatherQuery);
+        } else {
+            // If the search input is empty, display an error message
+            weatherResults.innerHTML = '<p>Please enter a valid city name</p>';
+        }
+    }
 });
