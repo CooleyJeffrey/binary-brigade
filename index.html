@@ -18,8 +18,8 @@
     </div>
     <div class="top-bar-right">
       <ul class="menu">
-        <li><input type="search" placeholder="Search"></li>
-        <li><button type="button" class="button" id="search-button">Search</button></li>
+        <li><input type="text" id="search-input" placeholder="Search news"></li>
+        <li><button id="search-button" class="button" >Search</button></li>
       </ul>
     </div>
   </div>
@@ -27,9 +27,18 @@
 
   <!-- logo and Weather -->
   <div class="row weather-info">
+    <!-- Search input -->
+    <input type="text" id="weatherSearchInput" placeholder="Enter city name">
+    
+    <!-- Search button -->
+    <button id="weatherSearchButton"> Search </button>
+    
+    <!-- Weather display area -->
+    <div id="weatherResults"></div>
+
     <div class="columns medium-3">
       
-      <img src="assets/jpg/breaking-news-7562017_640.jpg" alt="company logo">
+      <!-- <img src="assets/jpg/breaking-news-7562017_640.jpg" alt="company logo"> -->
       </div>
       <div class="columns medium-3" id="weather-description"></div>
       <div class="columns medium-3" id="temperature"></div>
@@ -97,9 +106,10 @@
 <br>
 
 <!-- Main content, various articles in different formats-->
-<div class="row">
-  <div class="medium-8 columns">
-    <p><img src="https://placehold.it/900x450&text=Promoted Article" alt="main article image"></p> <!-- Article 1-->
+<div class="news-list" id="news-list">
+  <!-- <div class="medium-8 columns ,newsList "> -->
+    <!-- <div class="news-article-one"></div> -->
+
   </div>
   <div class="medium-4 columns">
     <p><img src="https://placehold.it/400x200&text=Other cool article" alt="article promo image" alt="advertisement for deep fried Twinkies"></p> <!-- Article 2-->
@@ -223,14 +233,14 @@
     <script src="assets\script.js"></script>
     <script>
       $(document).foundation();
-      function searchWeather() {
-    const city = document.getElementById('weather-search-input').value;
-    updateWeather(city);
-  }
+  // //     function searchWeather() {
+  // //   const city = document.getElementById('weather-search-input').value;
+  // //   updateWeather(city);
+  // // }
 
-  function searchNews() {
-    const query = document.getElementById('news-search-input').value;
-    updateNews(query);
-  }
+  // // function searchNews() {
+  // //   const query = document.getElementById('news-search-input').value;
+  // //   updateNews(query);
+  // }
     </script>
   </body>
