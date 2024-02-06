@@ -41,6 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const sourceElement = document.createElement('p');
             sourceElement.textContent = `Source: ${article.source}`;
     
+            const imageElement = document.createElement('img'); // Create image element
+            imageElement.src = article.image_url; // Set the src attribute to the image URL
+            imageElement.alt = "Article Image"; // Add alt text for accessibility
+    
             const linkElement = document.createElement('a');
             linkElement.textContent = 'Read more';
             linkElement.href = article.web_url;
@@ -49,12 +53,12 @@ document.addEventListener("DOMContentLoaded", function () {
             articleElement.appendChild(titleElement);
             articleElement.appendChild(descriptionElement);
             articleElement.appendChild(sourceElement);
+            articleElement.appendChild(imageElement); // Append image element
             articleElement.appendChild(linkElement);
     
             newsList.appendChild(articleElement); // Append article to the news list div
         });
     }
-
     // Function to handle search button click
     async function handleSearchButtonClick() {
         const searchKeyword = searchInput.value.trim();
