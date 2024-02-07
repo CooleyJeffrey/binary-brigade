@@ -88,8 +88,8 @@ function renderArticles(articles) {
                     updateWeather(latitude, longitude);
                 },
                 (error) => {
-                    console.error('Error getting geolocation:', error);
-                    weatherResults.innerHTML = '<p>Error getting geolocation</p>';
+                    console.error('Error getting location:', error);
+                    weatherResults.innerHTML = '<p>Error getting location</p>';
                 }
             );
         } else {
