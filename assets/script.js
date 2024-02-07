@@ -1,55 +1,131 @@
-// Fetch news data and update HTML elements(set html)
-const newsApiKey = '9a75b8ec02a84d67a432cd48764a03f5'; // News API key
-
-const newsApiUrl = `https://newsapi.org/v2/top-headlines?country=us&apiKey=9a75b8ec02a84d67a432cd48764a03f5`;
-
-async function updateNews(query = 'Tesla') {
-  try {
-    const response = await fetch(query ? `${newsApiUrl}&q=${query}` : newsApiUrl);
-    const data = await response.json();
-
+document.addEventListener("DOMContentLoaded", function () {
+    const weatherElement = document.getElementById('weather-display');
     const newsList = document.getElementById('news-list');
-    newsList.innerHTML = '';
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const weatherResults = document.getElementById('weatherResults');
 
-    data.articles.forEach(article => {
-      const listItem = document.createElement('li');
-      listItem.innerHTML = `<a href="${article.url}" target="_blank">${article.title}</a>`;
-      newsList.appendChild(listItem);
+    const weatherApiKey = '8b5197e33de4d2ab503208b076814a9e';
+    const newsApiKey = '92eAk2h5NotfAJuwLDQj83mQJ7bAcpCK';
+
+    // Function to fetch news articles
+    async function fetchNewsArticles(searchKeyword) {
+        const newsApiUrl = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${searchKeyword}&api-key=${newsApiKey}`;
+        try {
+            const response = await fetch(newsApiUrl);
+            const data = await response.json();
+            return data.response.docs; // assuming 'articles' is an array in 'response'
+        } catch (error) {
+            console.error('Error fetching news:', error);
+            newsList.innerHTML = '<p>Error fetching news</p>';
+            return [];
+        }
+    }
+
+// Function to render articles in the list
+function renderArticles(articles) {
+    const newsList = document.getElementById('news-list'); // Get the news list div
+    newsList.innerHTML = ''; // Clear previous content
+
+    articles.forEach((article) => {
+        const articleElement = document.createElement('div');
+        articleElement.classList.add('article');
+
+        const titleElement = document.createElement('h2');
+        titleElement.textContent = article.headline.main;
+
+        const descriptionElement = document.createElement('p');
+        descriptionElement.textContent = article.abstract;
+
+        const sourceElement = document.createElement('p');
+        sourceElement.textContent = `Source: ${article.source}`;
+
+        const imageElement = document.createElement('img');
+        imageElement.alt = "Article Image"; // Add alt text for accessibility
+
+        // Check if the article has an image
+        if (article.multimedia && article.multimedia.length > 0) {
+            // Get the URL of the first image
+            const imageUrl = `https://www.nytimes.com/${article.multimedia[0].url}`;
+            imageElement.src = imageUrl;
+        } else {
+            // If there's no image, leave the blank
+            imageElement.src = '';
+        }
+
+        const linkElement = document.createElement('a');
+        linkElement.textContent = 'Read more';
+        linkElement.href = article.web_url;
+        linkElement.target = '_blank';
+
+        articleElement.appendChild(titleElement);
+        articleElement.appendChild(descriptionElement);
+        articleElement.appendChild(sourceElement);
+        articleElement.appendChild(imageElement);
+        articleElement.appendChild(linkElement);
+
+        newsList.appendChild(articleElement);
     });
-  } catch (error) {
-    console.error('Error fetching news:', error);
-  }
 }
 
-// Fetch weather data and update HTML elements (set html)
-const weatherApiKey = '8b5197e33de4d2ab503208b076814a9e'; // Replace 'API_KEY' with actual OpenWeatherMap API key
+    // Function to handle search button click
+    async function handleSearchButtonClick() {
+        const searchKeyword = searchInput.value.trim();
+        if (searchKeyword !== '') {
+            const articles = await fetchNewsArticles(searchKeyword);
+            renderArticles(articles);
+        }
+    }
 
-async function updateWeather(city = 'New York') {
-  try {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=metric`);
-    const data = await response.json();
+    // Function to handle weather display based on user's location
+    function displayWeatherByLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    updateWeather(latitude, longitude);
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    weatherResults.innerHTML = '<p>Error getting location</p>';
+                }
+            );
+        } else {
+            weatherResults.innerHTML = '<p>Geolocation is not supported by this browser</p>';
+        }
+    }
 
-    // Update HTML elements with weather information
-    document.getElementById('weather-description').textContent = data.weather[0].description;
-    document.getElementById('temperature').textContent = `Temperature: ${data.main.temp} °F`;
-    document.getElementById('location').textContent = `Location: ${data.name}, ${data.sys.country}`;
-  } catch (error) {
-    console.error('Error fetching weather:', error);
-  }
-}
+    // Function to update weather data
+    async function updateWeather(latitude, longitude) {
+        try {
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${weatherApiKey}&units=metric`);
+            
+            if (!response.ok) {
+                throw new Error('Weather data not found');
+            }
+    
+            const data = await response.json();
+    
+            // Extract relevant weather information from the response
+            const weatherDescription = data.weather[0].description;
+            const temperatureCelsius = data.main.temp;
+            const temperatureFahrenheit = (temperatureCelsius * 9/5) + 32;
+    
+            // Get the weather icon code
+            const weatherIconCode = data.weather[0].icon;
+            const weatherIconUrl = `http://openweathermap.org/img/w/${weatherIconCode}.png`;
+    
+            // Update the weather display on your page
+            weatherResults.innerHTML = `Weather: ${weatherDescription}, Temperature: ${temperatureCelsius}°C / ${temperatureFahrenheit}°F <br><img src="${weatherIconUrl}" alt="Weather Icon">`;
+        } catch (error) {
+            console.error('Error fetching weather:', error);
+            weatherResults.innerHTML = '<p>Error fetching weather</p>';
+        }
+    }
 
-// Search function for news and weather
-function search() {
-  const weatherQuery = document.getElementById('weather-search-input').value;
-  updateWeather(weatherQuery);
 
-  const newsQuery = document.getElementById('news-search-input').value;
-  updateNews(newsQuery);
-}
-
-// Event listener for search button
-document.getElementById('search-button').addEventListener('click', search);
-
-// Initial data update
-updateNews();
-updateWeather();
+    // Event listeners
+    searchButton.addEventListener('click', handleSearchButtonClick);
+    displayWeatherByLocation();
+});
