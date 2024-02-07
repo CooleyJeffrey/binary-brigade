@@ -105,16 +105,20 @@ function renderArticles(articles) {
             if (!response.ok) {
                 throw new Error('Weather data not found');
             }
-
+    
             const data = await response.json();
-
+    
             // Extract relevant weather information from the response
             const weatherDescription = data.weather[0].description;
             const temperatureCelsius = data.main.temp;
             const temperatureFahrenheit = (temperatureCelsius * 9/5) + 32;
-
+    
+            // Get the weather icon code
+            const weatherIconCode = data.weather[0].icon;
+            const weatherIconUrl = `http://openweathermap.org/img/w/${weatherIconCode}.png`;
+    
             // Update the weather display on your page
-            weatherResults.innerHTML = `Weather: ${weatherDescription}, Temperature: ${temperatureCelsius}°C / ${temperatureFahrenheit}°F`;
+            weatherResults.innerHTML = `Weather: ${weatherDescription}, Temperature: ${temperatureCelsius}°C / ${temperatureFahrenheit}°F <br><img src="${weatherIconUrl}" alt="Weather Icon">`;
         } catch (error) {
             console.error('Error fetching weather:', error);
             weatherResults.innerHTML = '<p>Error fetching weather</p>';
