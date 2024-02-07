@@ -12,12 +12,12 @@ body, html {
 
 .content {
     flex: 1;
-    padding: 20px;
+    padding: 10px;
     box-sizing: border-box;
 }
 
 .weather-info {
-    width: 30%; /* Adjust width as needed */
+    width: 100%; /* Adjust width as needed */
     background-color: #f0f0f0;
     padding: 20px;
     box-sizing: border-box;

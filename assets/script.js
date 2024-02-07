@@ -88,7 +88,7 @@ function renderArticles(articles) {
                 },
                 (error) => {
                     console.error('Error getting location:', error);
-                    weatherResults.innerHTML = '<p>Error getting location</p>';
+                    weatherResults.innerHTML = '<p>Geolocation denied for Weather info</p>';
                 }
             );
         } else {
@@ -108,16 +108,16 @@ function renderArticles(articles) {
             const data = await response.json();
     
             // Extract relevant weather information from the response
-            const weatherDescription = data.weather[0].description;
-            const temperatureCelsius = data.main.temp;
-            const temperatureFahrenheit = (temperatureCelsius * 9/5) + 32;
-    
-            // Get the weather icon code
-            const weatherIconCode = data.weather[0].icon;
-            const weatherIconUrl = `http://openweathermap.org/img/w/${weatherIconCode}.png`;
-    
-            // Update the weather display on your page
-            weatherResults.innerHTML = `Weather: ${weatherDescription}, Temperature: ${temperatureCelsius}°C / ${temperatureFahrenheit}°F <br><img src="${weatherIconUrl}" alt="Weather Icon">`;
+            var currentIcon = document.createElement('img');
+            currentIcon.src = `https://openweathermap.org/img/w/${data.weather[0].icon}.png`;
+            document.getElementById('weather-description').appendChild(currentIcon);
+           
+            var currentDescription = document.createElement("p");
+            currentDescription.textContent = data.weather[0].description
+            document.getElementById('weather-description').appendChild(currentDescription);
+   
+            document.getElementById('temperature').textContent = `Temperature: ${data.main.temp} °C Humidity: ${data.main.humidity} %`;
+            document.getElementById('location').textContent = `Location: ${data.name}, ${data.sys.country}`;
         } catch (error) {
             console.error('Error fetching weather:', error);
             weatherResults.innerHTML = '<p>Error fetching weather</p>';
