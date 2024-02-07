@@ -38,7 +38,7 @@ To run the application locally:
 
 ## Contributors
 
-- Alex Grossman (<add email>)
+- Alex Grossman (<agrossmann315@gmail.com>)
 - Julia Pylpiv (<add email>)
 - Jeffrey Cooley (<lydellcooley3@gmail.com>)
 

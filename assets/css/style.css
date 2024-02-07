@@ -14,7 +14,7 @@ body {
 .top-bar  {
   background-color: rgb(39, 39, 82);
   height: 4em;
-  width: 100em;
+  width: auto;
 
 }
 a:-webkit-any-link {
