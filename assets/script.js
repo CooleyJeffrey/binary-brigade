@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const weatherElement = document.getElementById('weather-display');
     const newsList = document.getElementById('news-list');
     const searchInput = document.getElementById('search-input');
@@ -22,51 +22,51 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-// Function to render articles in the list
-function renderArticles(articles) {
-    const newsList = document.getElementById('news-list'); // Get the news list div
-    newsList.innerHTML = ''; // Clear previous content
+    // Function to render articles in the list
+    function renderArticles(articles) {
+        const newsList = document.getElementById('news-list'); // Get the news list div
+        newsList.innerHTML = ''; // Clear previous content
 
-    articles.forEach((article) => {
-        const articleElement = document.createElement('div');
-        articleElement.classList.add('article');
+        articles.forEach((article) => {
+            const articleElement = document.createElement('div');
+            articleElement.classList.add('article');
 
-        const titleElement = document.createElement('h2');
-        titleElement.textContent = article.headline.main;
+            const titleElement = document.createElement('h2');
+            titleElement.textContent = article.headline.main;
 
-        const descriptionElement = document.createElement('p');
-        descriptionElement.textContent = article.abstract;
+            const descriptionElement = document.createElement('p');
+            descriptionElement.textContent = article.abstract;
 
-        const sourceElement = document.createElement('p');
-        sourceElement.textContent = `Source: ${article.source}`;
+            const sourceElement = document.createElement('p');
+            sourceElement.textContent = `Source: ${article.source}`;
 
-        const imageElement = document.createElement('img');
-        imageElement.alt = "Article Image"; // Add alt text for accessibility
+            const imageElement = document.createElement('img');
+            imageElement.alt = "Article Image"; // Add alt text for accessibility
 
-        // Check if the article has an image
-        if (article.multimedia && article.multimedia.length > 0) {
-            // Get the URL of the first image
-            const imageUrl = `https://www.nytimes.com/${article.multimedia[0].url}`;
-            imageElement.src = imageUrl;
-        } else {
-            // If there's no image, leave the blank
-            imageElement.src = '';
-        }
+            // Check if the article has an image
+            if (article.multimedia && article.multimedia.length > 0) {
+                // Get the URL of the first image
+                const imageUrl = `https://www.nytimes.com/${article.multimedia[0].url}`;
+                imageElement.src = imageUrl;
+            } else {
+                // If there's no image, leave the blank
+                imageElement.src = '';
+            }
 
-        const linkElement = document.createElement('a');
-        linkElement.textContent = 'Read more';
-        linkElement.href = article.web_url;
-        linkElement.target = '_blank';
+            const linkElement = document.createElement('a');
+            linkElement.textContent = 'Read more';
+            linkElement.href = article.web_url;
+            linkElement.target = '_blank';
 
-        articleElement.appendChild(titleElement);
-        articleElement.appendChild(descriptionElement);
-        articleElement.appendChild(sourceElement);
-        articleElement.appendChild(imageElement);
-        articleElement.appendChild(linkElement);
+            articleElement.appendChild(titleElement);
+            articleElement.appendChild(descriptionElement);
+            articleElement.appendChild(sourceElement);
+            articleElement.appendChild(imageElement);
+            articleElement.appendChild(linkElement);
 
-        newsList.appendChild(articleElement);
-    });
-}
+            newsList.appendChild(articleElement);
+        });
+    }
 
     // Function to handle search button click
     async function handleSearchButtonClick() {
@@ -124,6 +124,9 @@ function renderArticles(articles) {
         }
     }
 
+    // Load some default articles when the page loads
+    const defaultArticles = await fetchNewsArticles("tech"); // You can use any default keyword
+    renderArticles(defaultArticles);
 
     // Event listeners
     searchButton.addEventListener('click', handleSearchButtonClick);
