@@ -23,42 +23,52 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Function to render articles in the list
-    function renderArticles(articles) {
-        const newsList = document.getElementById('news-list'); // Get the news list div
-        newsList.innerHTML = ''; // Clear previous content
-    
-        articles.forEach((article) => {
-            const articleElement = document.createElement('div');
-            articleElement.classList.add('article');
-    
-            const titleElement = document.createElement('h2');
-            titleElement.textContent = article.headline.main;
-    
-            const descriptionElement = document.createElement('p');
-            descriptionElement.textContent = article.abstract;
-    
-            const sourceElement = document.createElement('p');
-            sourceElement.textContent = `Source: ${article.source}`;
-    
-            const imageElement = document.createElement('img'); // Create image element
-            imageElement.src = article.image_url; // Set the src attribute to the image URL
-            imageElement.alt = "Article Image"; // Add alt text for accessibility
-    
-            const linkElement = document.createElement('a');
-            linkElement.textContent = 'Read more';
-            linkElement.href = article.web_url;
-            linkElement.target = '_blank';
-    
-            articleElement.appendChild(titleElement);
-            articleElement.appendChild(descriptionElement);
-            articleElement.appendChild(sourceElement);
-            articleElement.appendChild(imageElement); // Append image element
-            articleElement.appendChild(linkElement);
-    
-            newsList.appendChild(articleElement); // Append article to the news list div
-        });
-    }
+// Function to render articles in the list
+function renderArticles(articles) {
+    const newsList = document.getElementById('news-list'); // Get the news list div
+    newsList.innerHTML = ''; // Clear previous content
+
+    articles.forEach((article) => {
+        const articleElement = document.createElement('div');
+        articleElement.classList.add('article');
+
+        const titleElement = document.createElement('h2');
+        titleElement.textContent = article.headline.main;
+
+        const descriptionElement = document.createElement('p');
+        descriptionElement.textContent = article.abstract;
+
+        const sourceElement = document.createElement('p');
+        sourceElement.textContent = `Source: ${article.source}`;
+
+        const imageElement = document.createElement('img');
+        imageElement.alt = "Article Image"; // Add alt text for accessibility
+
+        // Check if the article has an image
+        if (article.multimedia && article.multimedia.length > 0) {
+            // Get the URL of the first image (you might need to adjust this logic based on your API response)
+            const imageUrl = `https://www.nytimes.com/${article.multimedia[0].url}`;
+            imageElement.src = imageUrl;
+        } else {
+            // If there's no image, leave the src attribute blank
+            imageElement.src = '';
+        }
+
+        const linkElement = document.createElement('a');
+        linkElement.textContent = 'Read more';
+        linkElement.href = article.web_url;
+        linkElement.target = '_blank';
+
+        articleElement.appendChild(titleElement);
+        articleElement.appendChild(descriptionElement);
+        articleElement.appendChild(sourceElement);
+        articleElement.appendChild(imageElement);
+        articleElement.appendChild(linkElement);
+
+        newsList.appendChild(articleElement);
+    });
+}
+
     // Function to handle search button click
     async function handleSearchButtonClick() {
         const searchKeyword = searchInput.value.trim();
