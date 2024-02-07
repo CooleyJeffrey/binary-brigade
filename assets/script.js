@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const newsList = document.getElementById('news-list');
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
-    // const weatherSearchButton = document.getElementById('weather-search-button');
     const weatherResults = document.getElementById('weatherResults');
 
     const weatherApiKey = '8b5197e33de4d2ab503208b076814a9e';
@@ -46,11 +45,11 @@ function renderArticles(articles) {
 
         // Check if the article has an image
         if (article.multimedia && article.multimedia.length > 0) {
-            // Get the URL of the first image (you might need to adjust this logic based on your API response)
+            // Get the URL of the first image
             const imageUrl = `https://www.nytimes.com/${article.multimedia[0].url}`;
             imageElement.src = imageUrl;
         } else {
-            // If there's no image, leave the src attribute blank
+            // If there's no image, leave the blank
             imageElement.src = '';
         }
 
